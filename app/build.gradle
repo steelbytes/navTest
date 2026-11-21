@@ -1,0 +1,49 @@
+plugins {
+    id 'com.android.application'
+}
+
+def localProps = new Properties()
+def lp = rootProject.file('local.properties')
+if (lp.exists()) lp.withInputStream { localProps.load(it) }
+
+android {
+    namespace 'com.example.navtest'
+    compileSdk 37
+
+    defaultConfig {
+        applicationId 'com.example.navtest'
+        minSdk 26
+        targetSdk 37
+        versionCode 1
+        versionName '1.0'
+        def mapsKey = localProps.getProperty('MAPS_API_KEY', '')
+        manifestPlaceholders = [MAPS_API_KEY: mapsKey]
+        buildConfigField 'String', 'MAPS_API_KEY', "\"$mapsKey\""
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+        coreLibraryDesugaringEnabled true // required by the Navigation SDK
+    }
+}
+
+kotlin {
+    jvmToolchain(21)
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.19.1'
+    implementation 'androidx.appcompat:appcompat:1.8.0'
+    implementation 'androidx.activity:activity-ktx:1.13.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0'
+    implementation 'com.google.android.libraries.navigation:navigation:8.1.0'
+    implementation('com.google.android.libraries.places:places:6.1.0') {
+        exclude group: 'com.google.android.gms', module: 'play-services-maps' // Navigation SDK bundles these classes
+    }
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5'
+}

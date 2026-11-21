@@ -63,7 +63,7 @@ class NavService : Service() {
             log("stopping navigation")
             nav.stopGuidance()
 
-            delay(30_000)
+            delay(35_000)
             destroyNavigator()
 
             if (loop < LOOPS) delay(35_000)
